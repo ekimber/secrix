@@ -394,7 +394,6 @@ in
         (a: x: a // {
           ${x.secretsServiceName} = {
             before = [ "${x.systemdService}.service" ];
-            #bindsTo = [ "${x.systemdService}.service" ];
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true;
@@ -442,6 +441,7 @@ in
           ${x.systemdService} = {
             after = [ "${x.secretsServiceName}.service" ];
             bindsTo = [ "${x.secretsServiceName}.service" ];
+            wants = [ "${x.secretsServiceName}.service" ];
             serviceConfig.RuntimeDirectory = (if x.forceRuntimeDirs then mkForce else id) ([ x.secretsServiceName ] ++ x.additionalRuntimeDirNames);
           };
         })
